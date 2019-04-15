@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO.Ports;
+using System.Linq;
 
 namespace SupplyTester_Interface
 {
@@ -87,24 +84,32 @@ namespace SupplyTester_Interface
                 case 1:
                     if (port.IsOpen)
                     {
+                        Console.WriteLine();
+                        Console.Write("Tested voltage: ");
                         port.Write("voltage");
                     }
                     break;
                 case 2:
                     if (port.IsOpen)
                     {
+                        Console.WriteLine();
+                        Console.Write("Tested current: ");
                         port.Write("current");
                     }
                     break;
                 case 3:
                     if (port.IsOpen)
                     {
+                        Console.WriteLine();
+                        Console.Write("Output voltage: ");
                         port.Write("readv");
                     }
                     break;
                 case 4:
                     if (port.IsOpen)
                     {
+                        Console.WriteLine();
+                        Console.Write("Output current: ");
                         port.Write("readc");
                     }
                     break;

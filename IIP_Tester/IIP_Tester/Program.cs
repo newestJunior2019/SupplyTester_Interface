@@ -19,6 +19,7 @@ namespace SupplyTester_Interface
             Console.Clear();
 
             IIP_TESTER.Connect();
+            IIP_TESTER.ChangeInstuction();
 
             Console.ReadLine();
         }
