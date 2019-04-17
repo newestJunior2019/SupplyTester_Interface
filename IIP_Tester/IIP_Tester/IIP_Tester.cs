@@ -6,6 +6,8 @@ namespace SupplyTester_Interface
 {
     class IIP_TESTER
     {
+        public const bool DEBUG = true;        // режим debug
+
         static SerialPort port = new SerialPort();
         static int portNumber = 0;
 
@@ -13,7 +15,7 @@ namespace SupplyTester_Interface
         {
             port.DataReceived += new SerialDataReceivedEventHandler(DataParsing);   // добавляем обработчик по приходу данных
             string[] availablePorts = SerialPort.GetPortNames();                    // сохраняем список доступных портов
-            if (availablePorts.Count() == 0)
+            if (availablePorts.Count() == 0)                                        // проверка количества доступных портов
             {
                 Console.WriteLine("Devices not detected...\nResearch? Y/N\n");
                 string s = Console.ReadLine();
@@ -22,7 +24,7 @@ namespace SupplyTester_Interface
             }
             else Console.WriteLine("Change device COM port number: \n");
 
-            for (short i = 0; i < availablePorts.Count(); i++)                       // выводим список портов
+            for (short i = 0; i < availablePorts.Count(); i++)                      // выводим список портов
             {
                 Console.Write((i + 1) + " - ");
                 Console.WriteLine(availablePorts[i]);
@@ -30,17 +32,17 @@ namespace SupplyTester_Interface
 
             try
             {
-                portNumber = int.Parse(Console.ReadLine());         // вибираем порт
+                portNumber = int.Parse(Console.ReadLine());                         // вибираем порт
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.ToString());
+                //Console.WriteLine(e.ToString());              // вывод ошибки
                 Console.WriteLine("\nChange device COM port number: \n");
                 portNumber = int.Parse(Console.ReadLine());
                 Console.Clear();
             }
 
-            if (!port.IsOpen)
+            if (!port.IsOpen)                                   // настраиваем и открываем выбранный com порт
             {
                 port.BaudRate = 38400;
                 port.DtrEnable = true;
@@ -49,7 +51,7 @@ namespace SupplyTester_Interface
                 port.PortName = availablePorts[portNumber - 1].ToString();
                 port.Open();
             }
-            if (port.IsOpen)
+            if (port.IsOpen)                                    // сообщаем статус подключения
             {
                 Console.Clear();
                 Console.WriteLine("Connected to " + availablePorts[portNumber - 1].ToString());
@@ -71,42 +73,55 @@ namespace SupplyTester_Interface
         {
             Console.WriteLine("Available instructions: ");
             Console.Write
-                (
-                    "1 - Test voltage\n" +
-                    "2 - Test current\n" +
-                    "3 - Read voltage\n" +
-                    "4 - Read current\n"
-                );
+            (
+                "0 - Test C/V protection\n" + 
+                "1 - Test voltage\n"    +
+                "2 - Test current\n"    +
+                "3 - Read voltage\n"    +
+                "4 - Read current\n"
+            );
 
             int command = int.Parse(Console.ReadLine());
             switch (command)
             {
-                case 1:
-                    if (port.IsOpen)
+                    case 0:
+                        if (port.IsOpen)
+                    {
+                        Console.WriteLine();
+                        Console.Write("Tested voltage: ");
+                        port.Write("voltage");
+                        Console.ReadLine();
+                        Console.Write("Tested current: ");
+                        port.Write("current");
+                        Console.ReadLine();
+                    }
+                    break;
+                    case 1:
+                        if (port.IsOpen)
                     {
                         Console.WriteLine();
                         Console.Write("Tested voltage: ");
                         port.Write("voltage");
                     }
                     break;
-                case 2:
-                    if (port.IsOpen)
+                    case 2:
+                        if (port.IsOpen)
                     {
                         Console.WriteLine();
                         Console.Write("Tested current: ");
                         port.Write("current");
                     }
                     break;
-                case 3:
-                    if (port.IsOpen)
+                    case 3:
+                        if (port.IsOpen)
                     {
                         Console.WriteLine();
                         Console.Write("Output voltage: ");
                         port.Write("readv");
                     }
                     break;
-                case 4:
-                    if (port.IsOpen)
+                    case 4:
+                        if (port.IsOpen)
                     {
                         Console.WriteLine();
                         Console.Write("Output current: ");
