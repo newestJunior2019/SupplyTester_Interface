@@ -7,6 +7,7 @@ using System.IO.Ports;
 using System.Net.Sockets;
 using System.Management;
 using Microsoft.Win32;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace SupplyTester_Interface
 {
@@ -14,19 +15,14 @@ namespace SupplyTester_Interface
     {
         static void Main(string[] args)
         {
+            ConsoleCancelEventHandler Closed = new ConsoleCancelEventHandler(ClosingEvent);
             Console.InputEncoding = Encoding.UTF8;
             Console.OutputEncoding = Encoding.UTF8;
-            ConsoleCancelEventHandler Closed = new ConsoleCancelEventHandler(ClosingEvent);
-            
             Console.Clear();
 
             IIP_TESTER.Connect();
-            while(true)
-            {
-                Console.Clear();
-                //IIP_TESTER.ChangeInstuction();
-                Console.ReadLine();
-            }
+            IIP_TESTER.OpenExcel();
+            Console.ReadLine();
         }
         
         static void ClosingEvent(object sender, ConsoleCancelEventArgs e)

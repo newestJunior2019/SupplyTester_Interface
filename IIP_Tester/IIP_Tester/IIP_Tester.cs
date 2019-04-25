@@ -1,20 +1,33 @@
 ﻿using System;
 using System.IO.Ports;
 using System.Linq;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace SupplyTester_Interface
 {
     class IIP_TESTER
     {
-        public const bool DEBUG = true;        // режим debug
+        //public const bool DEBUG = true;        // режим debug
 
         static SerialPort port = new SerialPort();
         static int portNumber = 0;
+        static int row = 1;
+        static int column = 1;
+        static bool IsVoltage = true;
+
+        // Создаём экземпляр нашего приложения
+        static Excel.Application excelApp = new Excel.Application();
+        // Создаём экземпляр рабочий книги Excel
+        static Excel.Workbook workBook;
+        // Создаём экземпляр листа Excel
+        static Excel.Worksheet workSheet;
 
         public static void Connect()
         {
             port.DataReceived += new SerialDataReceivedEventHandler(DataParsing);   // добавляем обработчик по приходу данных
             string[] availablePorts = SerialPort.GetPortNames();                    // сохраняем список доступных портов
+            
+
             if (availablePorts.Count() == 0)                                        // проверка количества доступных портов
             {
                 Console.WriteLine("Devices not detected...\nResearch? Y/N\n");
@@ -67,6 +80,15 @@ namespace SupplyTester_Interface
                 if (!port.IsOpen) Console.WriteLine("Disconnected!");
                 else Console.WriteLine("Disconnection Error!");
             }
+        }
+
+        public static void OpenExcel()
+        {
+            workBook = excelApp.Workbooks.Add();
+            workSheet = (Excel.Worksheet)workBook.Worksheets.get_Item(1);
+
+            excelApp.Visible = true;
+            excelApp.UserControl = true;
         }
 
         /*public static int ChangeInstuction()
@@ -130,8 +152,21 @@ namespace SupplyTester_Interface
 
         public static void DataParsing(object sender, SerialDataReceivedEventArgs e)
         {
-            Console.Write(port.ReadLine().ToString());
-            Console.WriteLine();
+            //Console.Write(port.ReadLine().ToString());
+            //Console.WriteLine();
+            if (IsVoltage)
+            {
+                column = 1;
+                workSheet.Cells[row, column] = port.ReadLine().ToString();
+                ++column;
+                IsVoltage = false;
+            }
+            else
+            {
+                workSheet.Cells[row, column] = port.ReadLine().ToString();
+                ++row;
+                IsVoltage = true;
+            }
         }
     }
 }
