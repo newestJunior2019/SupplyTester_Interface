@@ -17,13 +17,16 @@ namespace SupplyTester_Interface
             Console.InputEncoding = Encoding.UTF8;
             Console.OutputEncoding = Encoding.UTF8;
             ConsoleCancelEventHandler Closed = new ConsoleCancelEventHandler(ClosingEvent);
+            
             Console.Clear();
 
             IIP_TESTER.Connect();
-            IIP_TESTER.ChangeInstuction();
-
-            Console.ReadLine();
-            
+            while(true)
+            {
+                Console.Clear();
+                //IIP_TESTER.ChangeInstuction();
+                Console.ReadLine();
+            }
         }
         
         static void ClosingEvent(object sender, ConsoleCancelEventArgs e)

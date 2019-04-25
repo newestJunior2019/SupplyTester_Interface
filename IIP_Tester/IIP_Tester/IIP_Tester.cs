@@ -44,7 +44,7 @@ namespace SupplyTester_Interface
 
             if (!port.IsOpen)                                   // настраиваем и открываем выбранный com порт
             {
-                port.BaudRate = 38400;
+                port.BaudRate = 9600;
                 port.DtrEnable = true;
                 port.RtsEnable = true;
 
@@ -69,7 +69,7 @@ namespace SupplyTester_Interface
             }
         }
 
-        public static int ChangeInstuction()
+        /*public static int ChangeInstuction()
         {
             Console.WriteLine("Available instructions: ");
             Console.Write
@@ -87,13 +87,8 @@ namespace SupplyTester_Interface
                     case 0:
                         if (port.IsOpen)
                     {
-                        Console.WriteLine();
-                        Console.Write("Tested voltage: ");
-                        port.Write("voltage");
-                        Console.ReadLine();
-                        Console.Write("Tested current: ");
-                        port.Write("current");
-                        Console.ReadLine();
+                        Console.Clear();
+                        port.Write("testall");
                     }
                     break;
                     case 1:
@@ -131,11 +126,12 @@ namespace SupplyTester_Interface
             }
 
             return 0;
-        }
+        }*/
 
         public static void DataParsing(object sender, SerialDataReceivedEventArgs e)
         {
-            Console.WriteLine(port.ReadLine().ToString());
+            Console.Write(port.ReadLine().ToString());
+            Console.WriteLine();
         }
     }
 }
