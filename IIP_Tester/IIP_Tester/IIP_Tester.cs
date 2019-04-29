@@ -2,6 +2,7 @@
 using System.IO.Ports;
 using System.Linq;
 using Excel = Microsoft.Office.Interop.Excel;
+using System.IO;
 
 namespace SupplyTester_Interface
 {
@@ -11,9 +12,10 @@ namespace SupplyTester_Interface
 
         static SerialPort port = new SerialPort();
         static int portNumber = 0;
-        static int row = 1;
-        static int column = 1;
-        static bool IsVoltage = true;
+        static int row = 2;
+        static int startID = 1;
+        static int column = 2;
+        static string path = Directory.GetCurrentDirectory() + @"\karta.xlsx";
 
         // Создаём экземпляр нашего приложения
         static Excel.Application excelApp = new Excel.Application();
@@ -84,8 +86,11 @@ namespace SupplyTester_Interface
 
         public static void OpenExcel()
         {
-            workBook = excelApp.Workbooks.Add();
-            workSheet = (Excel.Worksheet)workBook.Worksheets.get_Item(1);
+            workBook = excelApp.Workbooks.Open(path);
+            workSheet = (Excel.Worksheet)workBook.Worksheets.Add();
+
+            workSheet.Cells[1, 1] = "ID";
+            workSheet.Cells[2, 1] = "1";
 
             excelApp.Visible = true;
             excelApp.UserControl = true;
@@ -152,20 +157,13 @@ namespace SupplyTester_Interface
 
         public static void DataParsing(object sender, SerialDataReceivedEventArgs e)
         {
-            //Console.Write(port.ReadLine().ToString());
-            //Console.WriteLine();
-            if (IsVoltage)
+            workSheet.Cells[row, column] = port.ReadLine().ToString();
+            column++;
+            if(column == 14)
             {
-                column = 1;
-                workSheet.Cells[row, column] = port.ReadLine().ToString();
-                ++column;
-                IsVoltage = false;
-            }
-            else
-            {
-                workSheet.Cells[row, column] = port.ReadLine().ToString();
-                ++row;
-                IsVoltage = true;
+                row++;
+                column = 2;
+                workSheet.Cells[row, 1] = ++startID;
             }
         }
     }
